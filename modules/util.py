@@ -1,35 +1,40 @@
 import os
 import re
+from pathlib import Path
 
 from modules import shared
 from modules.paths_internal import script_path
 
 
-def natural_sort_key(s, regex=re.compile('([0-9]+)')):
+def natural_sort_key(s, regex=re.compile(r"([0-9]+)")):
     return [int(text) if text.isdigit() else text.lower() for text in regex.split(s)]
 
 
-def listfiles(dirname):
-    filenames = [os.path.join(dirname, x) for x in sorted(os.listdir(dirname), key=natural_sort_key) if not x.startswith(".")]
-    return [file for file in filenames if os.path.isfile(file)]
+def listfiles(dirname) -> list:
+    filenames = [
+        Path(dirname, x)
+        for x in sorted(os.listdir(dirname), key=natural_sort_key)
+        if not x.startswith(".")
+    ]
+    return [file for file in filenames if Path(file).is_file()]
 
 
-def html_path(filename):
-    return os.path.join(script_path, "html", filename)
+def html_path(filename) -> Path:
+    return Path(script_path, "html", filename)
 
 
-def html(filename):
+def html(filename) -> str:
     path = html_path(filename)
 
-    if os.path.exists(path):
-        with open(path, encoding="utf8") as file:
+    if path.exists():
+        with path.open(encoding="utf8") as file:
             return file.read()
 
     return ""
 
 
 def walk_files(path, allowed_extensions=None):
-    if not os.path.exists(path):
+    if not Path(path).exists():
         return
 
     if allowed_extensions is not None:
@@ -41,14 +46,14 @@ def walk_files(path, allowed_extensions=None):
     for root, _, files in items:
         for filename in sorted(files, key=natural_sort_key):
             if allowed_extensions is not None:
-                _, ext = os.path.splitext(filename)
+                ext = Path(filename).suffix
                 if ext not in allowed_extensions:
                     continue
 
             if not shared.opts.list_hidden_files and ("/." in root or "\\." in root):
                 continue
 
-            yield os.path.join(root, filename)
+            yield Path(root) / filename
 
 
 def ldm_print(*args, **kwargs):
