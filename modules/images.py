@@ -20,6 +20,7 @@ import hashlib
 from modules import sd_samplers, shared, script_callbacks, errors
 from modules.paths_internal import roboto_ttf_file
 from modules.shared import opts
+import contextlib
 
 LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
 
@@ -385,7 +386,7 @@ class FilenameGenerator:
     def get_vae_filename(self):
         """Get the name of the VAE file."""
 
-        import modules.sd_vae as sd_vae
+        from modules import sd_vae
 
         if sd_vae.loaded_vae_file is None:
             return "NoneType"
@@ -511,10 +512,9 @@ def get_next_sequence_number(path, basename):
     for p in os.listdir(path):
         if p.startswith(basename):
             parts = os.path.splitext(p[prefix_length:])[0].split('-')  # splits the filename (removing the basename first if one is defined, so the sequence number is always the first element)
-            try:
+            with contextlib.suppress(ValueError):
                 result = max(int(parts[0]), result)
-            except ValueError:
-                pass
+
 
     return result + 1
 

@@ -10,13 +10,14 @@ import safetensors.torch
 from omegaconf import OmegaConf
 from os import mkdir
 from urllib import request
-import ldm.modules.midas as midas
+from ldm.modules import midas
 
 from ldm.util import instantiate_from_config
 
 from modules import paths, shared, modelloader, devices, script_callbacks, sd_vae, sd_disable_initialization, errors, hashes, sd_models_config, sd_unet, sd_models_xl, cache, extra_networks, processing, lowvram, sd_hijack
 from modules.timer import Timer
 import tomesd
+import contextlib
 
 model_dir = "Stable-diffusion"
 model_path = os.path.abspath(os.path.join(paths.models_path, model_dir))
@@ -254,10 +255,9 @@ def read_metadata_from_safetensors(filename):
         for k, v in json_obj.get("__metadata__", {}).items():
             res[k] = v
             if isinstance(v, str) and v[0:1] == '{':
-                try:
+                with contextlib.suppress(Exception):
                     res[k] = json.loads(v)
-                except Exception:
-                    pass
+
 
         return res
 
@@ -493,10 +493,9 @@ class SdModelData:
             sd_vae.loaded_vae_file = getattr(v, "loaded_vae_file", None)
             sd_vae.checkpoint_info = v.sd_checkpoint_info
 
-        try:
+        with contextlib.suppress(ValueError):
             self.loaded_sd_models.remove(v)
-        except ValueError:
-            pass
+
 
         if v is not None:
             self.loaded_sd_models.insert(0, v)

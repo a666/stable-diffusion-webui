@@ -18,6 +18,7 @@ import sgm.modules.attention
 import sgm.modules.diffusionmodules.model
 import sgm.modules.diffusionmodules.openaimodel
 import sgm.modules.encoders.modules
+import contextlib
 
 attention_CrossAttention_forward = ldm.modules.attention.CrossAttention.forward
 diffusionmodules_model_nonlinearity = ldm.modules.diffusionmodules.model.nonlinearity
@@ -107,7 +108,6 @@ def fix_checkpoint():
     """checkpoints are now added and removed in embedding/hypernet code, since torch doesn't want
     checkpoints to be added when not training (there's a warning)"""
 
-    pass
 
 
 def weighted_loss(sd_model, pred, target, mean=True):
@@ -152,10 +152,9 @@ def apply_weighted_forward(sd_model):
     sd_model.weighted_forward = MethodType(weighted_forward, sd_model)
 
 def undo_weighted_forward(sd_model):
-    try:
+    with contextlib.suppress(AttributeError):
         del sd_model.weighted_forward
-    except AttributeError:
-        pass
+
 
 
 class StableDiffusionModelHijack:
