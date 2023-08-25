@@ -9,7 +9,7 @@ from modules import ui_extra_networks_user_metadata
 
 
 def is_non_comma_tagset(tags):
-    average_tag_length = sum(len(x) for x in tags.keys()) / len(tags)
+    average_tag_length = sum(len(x) for x in tags) / len(tags)
 
     return average_tag_length >= 16
 
@@ -21,7 +21,7 @@ re_comma = re.compile(r" *, *")
 def build_tags(metadata):
     tags = {}
 
-    for _, tags_dict in metadata.get("ss_tag_frequency", {}).items():
+    for tags_dict in metadata.get("ss_tag_frequency", {}).values():
         for tag, tag_count in tags_dict.items():
             tag = tag.strip()
             tags[tag] = tags.get(tag, 0) + int(tag_count)
@@ -44,7 +44,7 @@ def build_tags(metadata):
 
 
 class LoraUserMetadataEditor(ui_extra_networks_user_metadata.UserMetadataEditor):
-    def __init__(self, ui, tabname, page):
+    def __init__(self, ui, tabname, page) -> None:
         super().__init__(ui, tabname, page)
 
         self.select_sd_version = None
@@ -87,7 +87,7 @@ class LoraUserMetadataEditor(ui_extra_networks_user_metadata.UserMetadataEditor)
         ss_bucket_info = metadata.get("ss_bucket_info")
         if ss_bucket_info and "buckets" in ss_bucket_info:
             resolutions = {}
-            for _, bucket in ss_bucket_info["buckets"].items():
+            for bucket in ss_bucket_info["buckets"].values():
                 resolution = bucket["resolution"]
                 resolution = f'{resolution[1]}x{resolution[0]}'
 
@@ -102,7 +102,7 @@ class LoraUserMetadataEditor(ui_extra_networks_user_metadata.UserMetadataEditor)
             table.append(('Resolutions:' if len(resolutions_list) > 1 else 'Resolution:', resolutions_text))
 
         image_count = 0
-        for _, params in metadata.get("ss_dataset_dirs", {}).items():
+        for params in metadata.get("ss_dataset_dirs", {}).values():
             image_count += int(params.get("img_count", 0))
 
         if image_count:
@@ -123,11 +123,11 @@ class LoraUserMetadataEditor(ui_extra_networks_user_metadata.UserMetadataEditor)
         return [
             *values[0:5],
             item.get("sd_version", "Unknown"),
-            gr.HighlightedText.update(value=gradio_tags, visible=True if tags else False),
+            gr.HighlightedText.update(value=gradio_tags, visible=bool(tags)),
             user_metadata.get('activation text', ''),
             float(user_metadata.get('preferred weight', 0.0)),
-            gr.update(visible=True if tags else False),
-            gr.update(value=self.generate_random_prompt_from_tags(tags), visible=True if tags else False),
+            gr.update(visible=bool(tags)),
+            gr.update(value=self.generate_random_prompt_from_tags(tags), visible=bool(tags)),
         ]
 
     def generate_random_prompt(self, name):
