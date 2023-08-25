@@ -209,7 +209,7 @@ class GroupedBatchSampler(Sampler):
 
 class PersonalizedDataLoader(DataLoader):
     def __init__(self, dataset, latent_sampling_method="once", batch_size=1, pin_memory=False):
-        super(PersonalizedDataLoader, self).__init__(dataset, batch_sampler=GroupedBatchSampler(dataset, batch_size), pin_memory=pin_memory)
+        super().__init__(dataset, batch_sampler=GroupedBatchSampler(dataset, batch_size), pin_memory=pin_memory)
         if latent_sampling_method == "random":
             self.collate_fn = collate_wrapper_random
         else:

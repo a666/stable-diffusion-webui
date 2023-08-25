@@ -81,7 +81,7 @@ class Options:
 
     def __setattr__(self, key, value):
         if key in options_builtin_fields:
-            return super(Options, self).__setattr__(key, value)
+            return super().__setattr__(key, value)
 
         if self.data is not None:
             if key in self.data or key in self.data_labels:
@@ -101,11 +101,11 @@ class Options:
                 self.data[key] = value
                 return
 
-        return super(Options, self).__setattr__(key, value)
+        return super().__setattr__(key, value)
 
     def __getattr__(self, item):
         if item in options_builtin_fields:
-            return super(Options, self).__getattribute__(item)
+            return super().__getattribute__(item)
 
         if self.data is not None:
             if item in self.data:
@@ -114,7 +114,7 @@ class Options:
         if item in self.data_labels:
             return self.data_labels[item].default
 
-        return super(Options, self).__getattribute__(item)
+        return super().__getattribute__(item)
 
     def set(self, key, value, is_api=False, run_callbacks=True):
         """sets an option and calls its onchange callback, returning True if the option changed and False otherwise"""
