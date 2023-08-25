@@ -2,28 +2,27 @@ import copy
 import random
 import shlex
 
-import modules.scripts as scripts
 import gradio as gr
 
-from modules import sd_samplers, errors
+from modules import errors, scripts, sd_samplers
 from modules.processing import Processed, process_images
 from modules.shared import state
 
 
-def process_string_tag(tag):
+def process_string_tag(tag) -> str:
     return tag
 
 
-def process_int_tag(tag):
+def process_int_tag(tag) -> int:
     return int(tag)
 
 
-def process_float_tag(tag):
+def process_float_tag(tag) -> float:
     return float(tag)
 
 
-def process_boolean_tag(tag):
-    return True if (tag == "true") else False
+def process_boolean_tag(tag) -> bool:
+    return tag == "true"
 
 
 prompt_tags = {
