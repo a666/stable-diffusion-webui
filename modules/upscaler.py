@@ -1,5 +1,5 @@
-import os
 from abc import abstractmethod
+from pathlib import Path
 
 import PIL
 from PIL import Image
@@ -7,8 +7,8 @@ from PIL import Image
 import modules.shared
 from modules import modelloader, shared
 
-LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
-NEAREST = (Image.Resampling.NEAREST if hasattr(Image, 'Resampling') else Image.NEAREST)
+LANCZOS = Image.Resampling.LANCZOS if hasattr(Image, "Resampling") else Image.LANCZOS
+NEAREST = Image.Resampling.NEAREST if hasattr(Image, "Resampling") else Image.NEAREST
 
 
 class Upscaler:
@@ -37,9 +37,9 @@ class Upscaler:
         self.model_download_path = None
 
         if self.model_path is None and self.name:
-            self.model_path = os.path.join(shared.models_path, self.name)
+            self.model_path = Path(shared.models_path, self.name)
         if self.model_path and create_dirs:
-            os.makedirs(self.model_path, exist_ok=True)
+            Path(self.model_path).mkdir(parents=True, exist_ok=True)
 
         try:
             import cv2  # noqa: F401
