@@ -1,4 +1,3 @@
-
 import gradio as gr
 
 from modules import sd_models, sd_vae, errors, extras, call_queue

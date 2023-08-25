@@ -3,7 +3,7 @@ import collections
 
 
 # reference: https://gist.github.com/vitaliyp/6d54dd76ca2c3cdfc1149d33007dc34a
-class FIFOLock(object):
+class FIFOLock:
     def __init__(self):
         self._lock = threading.Lock()
         self._inner_lock = threading.Lock()
