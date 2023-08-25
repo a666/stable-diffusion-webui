@@ -676,7 +676,7 @@ class LatentDiffusionV1(DDPMV1):
             else:
                 xc = x
             if not self.cond_stage_trainable or force_c_encode:
-                if isinstance(xc, dict) or isinstance(xc, list):
+                if isinstance(xc, dict | list):
                     # import pudb; pudb.set_trace()
                     c = self.get_learned_conditioning(xc)
                 else:

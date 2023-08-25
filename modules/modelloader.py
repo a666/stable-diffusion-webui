@@ -123,9 +123,8 @@ def move_files(src_path: str, dest_path: str, ext_filter: str = None):
             for file in os.listdir(src_path):
                 fullpath = os.path.join(src_path, file)
                 if os.path.isfile(fullpath):
-                    if ext_filter is not None:
-                        if ext_filter not in file:
-                            continue
+                    if ext_filter is not None and ext_filter not in file:
+                        continue
                     print(f"Moving {file} from {src_path} to {dest_path}.")
                     try:
                         shutil.move(fullpath, dest_path)

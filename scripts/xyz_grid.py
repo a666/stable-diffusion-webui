@@ -8,13 +8,13 @@ from io import StringIO
 from PIL import Image
 import numpy as np
 
-import modules.scripts as scripts
+from modules import scripts
 import gradio as gr
 
 from modules import images, sd_samplers, processing, sd_models, sd_vae, sd_samplers_kdiffusion, errors
 from modules.processing import process_images, Processed, StableDiffusionProcessingTxt2Img
 from modules.shared import opts, state
-import modules.shared as shared
+from modules import shared
 import modules.sd_samplers
 import modules.sd_models
 import modules.sd_vae
@@ -154,7 +154,7 @@ def apply_face_restore(p, opt, x):
 def apply_override(field, boolean: bool = False):
     def fun(p, x, xs):
         if boolean:
-            x = True if x.lower() == "true" else False
+            x = x.lower() == "true"
         p.override_settings[field] = x
     return fun
 

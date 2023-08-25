@@ -16,8 +16,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from secrets import compare_digest
 
-import modules.shared as shared
-from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing, errors, restart, shared_items, script_callbacks, generation_parameters_copypaste
+from modules import shared, sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing, errors, restart, shared_items, script_callbacks, generation_parameters_copypaste
 from modules.api import models
 from modules.shared import opts
 from modules.processing import StableDiffusionProcessingTxt2Img, StableDiffusionProcessingImg2Img, process_images
@@ -77,7 +76,7 @@ def verify_url(url):
 
 
 def decode_base64_to_image(encoding):
-    if encoding.startswith("http://") or encoding.startswith("https://"):
+    if encoding.startswith(("http://", "https://")):
         if not opts.api_enable_requests:
             raise HTTPException(status_code=500, detail="Requests not allowed")
 
