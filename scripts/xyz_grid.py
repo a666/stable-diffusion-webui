@@ -1,25 +1,36 @@
+import csv
+import random
+import re
 from collections import namedtuple
 from copy import copy
-from itertools import permutations, chain
-import random
-import csv
-import os.path
 from io import StringIO
-from PIL import Image
-import numpy as np
+from itertools import chain, permutations
+from pathlib import Path
 
-from modules import scripts
 import gradio as gr
+import numpy as np
+from PIL import Image
 
-from modules import images, sd_samplers, processing, sd_models, sd_vae, sd_samplers_kdiffusion, errors
-from modules.processing import process_images, Processed, StableDiffusionProcessingTxt2Img
-from modules.shared import opts, state
-from modules import shared
-import modules.sd_samplers
 import modules.sd_models
+import modules.sd_samplers
 import modules.sd_vae
-import re
-
+from modules import (
+    errors,
+    images,
+    processing,
+    scripts,
+    sd_models,
+    sd_samplers,
+    sd_samplers_kdiffusion,
+    sd_vae,
+    shared,
+)
+from modules.processing import (
+    Processed,
+    StableDiffusionProcessingTxt2Img,
+    process_images,
+)
+from modules.shared import opts, state
 from modules.ui_components import ToolButton
 
 fill_values_symbol = "\U0001f4d2"  # 📒
@@ -190,8 +201,8 @@ def format_nothing(p, opt, x):
     return ""
 
 
-def format_remove_path(p, opt, x):
-    return os.path.basename(x)
+def format_remove_path(p, opt, x) -> str:
+    return Path(x).name
 
 
 def str_permutations(x):
