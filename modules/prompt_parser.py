@@ -115,8 +115,7 @@ def get_learned_conditioning_prompt_schedules(prompts, base_steps, hires_steps=N
             def plain(self, args):
                 yield args[0].value
             def __default__(self, data, children, meta):
-                for child in children:
-                    yield child
+                yield from children
         return AtStep().transform(tree)
 
     def get_schedule(prompt):
